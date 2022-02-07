@@ -1,13 +1,10 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
-//difference in implementing useState
-//make setValue (setNewValue) as separate function
-//in Class component in order to use setValue as separate function
-//we have to bind it to this as each time we click onClick we lose context
-//so we have to bind setValue function to this
+//in Class component we use componentDidMount() instead of useEffect()
+//componentDidMount() will work when page is rendered the first time
 
-//as you can see now hooks are allowing us to use state in Functional component which results
-//in writing less codes comparing to Class component
+//in useEffect the logic is a bit different
+//if in array something changed only then useEffect works
 
 
 //Class component
@@ -18,8 +15,12 @@ class ErrorBoundary extends React.Component {
         this.state = {
             value: 1,
         }
+        this.setNewValue = this.setNewValue.bind(this);
     }
-    this.setNewValue = this.setNewValue.bind(this);
+
+    componentDidMount() {
+        console.log('useEffect one time')
+    }
 
     setNewValue() {
         this.setState({value: this.state.value + 1});
@@ -41,6 +42,9 @@ class ErrorBoundary extends React.Component {
 const ErrorB = () => {
     const [value,setValue] = useState(1)
     const setNewValue = ()=> setValue(value + 1);
+    useEffect(() => {
+        console.log('useEffect one time')
+    }, []);
 
     return (
         <div>
