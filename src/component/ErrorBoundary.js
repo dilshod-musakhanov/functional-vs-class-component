@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from "react";
 
-//in Class component we use componentDidMount() instead of useEffect()
-//componentDidMount() will work when page is rendered the first time
+//in Class component we use componentDidUpdate to do something once element (value) is changed
+//but the mess starts once you have many values to follow
+//as all values are under one function
 
-//in useEffect the logic is a bit different
-//if in array something changed only then useEffect works
 
+//once value in array changes only then useEffect works
+//in Functional component useEffect function is used separately for each value
 
 //Class component
 class ErrorBoundary extends React.Component {
@@ -14,12 +15,24 @@ class ErrorBoundary extends React.Component {
 
         this.state = {
             value: 1,
+            value1: 1,
+            value2: 1,
         }
         this.setNewValue = this.setNewValue.bind(this);
     }
 
     componentDidMount() {
         console.log('useEffect one time')
+    }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.value1 !== prevState.value1) {
+            console.log('useEffect worked when value1 changed')
+        }
+
+        if (this.state.value2 !== prevState.value2) {
+            console.log('useEffect worked when value2 changed')
+        }
+
     }
 
     setNewValue() {
@@ -41,10 +54,21 @@ class ErrorBoundary extends React.Component {
 //Functional component
 const ErrorB = () => {
     const [value,setValue] = useState(1)
+    const [value1,setValue1] = useState(1)
+    const [value2,setValue2] = useState(1)
     const setNewValue = ()=> setValue(value + 1);
+
     useEffect(() => {
-        console.log('useEffect one time')
-    }, []);
+        console.log('useEffect worked one time')
+    }, [value])
+
+    useEffect(() => {
+        console.log('useEffect worked when value1 changed')
+    }, [value1]);
+
+    useEffect(() => {
+        console.log('useEffect worked when value2 changed')
+    }, [value2]);
 
     return (
         <div>
