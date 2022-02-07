@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from "react";
 
-//in Class component we use componentDidUpdate to do something once element (value) is changed
-//but the mess starts once you have many values to follow
-//as all values are under one function
+//in Class component another complication may arise if you need to use eventListeners
+//first you have to bind it
+//then you have to add it to componentDidMount()
+//then you have to remove it in componentWillUnmount()
 
 
-//once value in array changes only then useEffect works
-//in Functional component useEffect function is used separately for each value
+//in Functional component it is much shorter and compact
+//add and remove eventListeners is used in one function only
 
 //Class component
 class ErrorBoundary extends React.Component {
@@ -19,11 +20,21 @@ class ErrorBoundary extends React.Component {
             value2: 1,
         }
         this.setNewValue = this.setNewValue.bind(this);
+        this.onScroll = this.onScroll.bind(this);
     }
 
     componentDidMount() {
         console.log('useEffect one time')
+
+        if (this.state.value === 1) {
+            console.log('value === 1')
+        }
+        document.body.addEventListener('scroll', this.onScroll);
+        document.body.addEventListener('scroll', this.onScroll);
+        document.body.addEventListener('scroll', this.onScroll);
     }
+
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state.value1 !== prevState.value1) {
             console.log('useEffect worked when value1 changed')
@@ -33,6 +44,12 @@ class ErrorBoundary extends React.Component {
             console.log('useEffect worked when value2 changed')
         }
 
+    }
+
+    componentWillUnmount() {
+        document.body.removeEventListener('scroll', this.onScroll);
+        document.body.removeEventListener('scroll', this.onScroll);
+        document.body.removeEventListener('scroll', this.onScroll);
     }
 
     setNewValue() {
@@ -50,7 +67,6 @@ class ErrorBoundary extends React.Component {
 
 
 
-
 //Functional component
 const ErrorB = () => {
     const [value,setValue] = useState(1)
@@ -59,8 +75,17 @@ const ErrorB = () => {
     const setNewValue = ()=> setValue(value + 1);
 
     useEffect(() => {
+        document.body.addEventListener('scroll', onscroll);
+
+        return () => {
+            document.body.removeEventListener('scroll', onscroll);
+        }
+    }, []);
+
+
+    useEffect(() => {
         console.log('useEffect worked one time')
-    }, [value])
+    }, [value]);
 
     useEffect(() => {
         console.log('useEffect worked when value1 changed')
